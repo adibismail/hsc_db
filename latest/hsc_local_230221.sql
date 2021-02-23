@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 23, 2021 at 07:50 AM
+-- Generation Time: Feb 23, 2021 at 03:57 PM
 -- Server version: 10.4.6-MariaDB
 -- PHP Version: 7.3.9
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `1`
+-- Database: `3`
 --
 
 -- --------------------------------------------------------
@@ -54,7 +54,7 @@ CREATE TABLE `alerts_table` (
   `resolved_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `reader_id` bigint(20) UNSIGNED DEFAULT NULL,
   `rules_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `action` tinyint(2) DEFAULT NULL,
+  `action` tinyint(1) DEFAULT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -65,7 +65,7 @@ CREATE TABLE `alerts_table` (
 --
 
 CREATE TABLE `beacons_table` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `beacon_id` bigint(20) UNSIGNED NOT NULL,
   `beacon_type` int(10) UNSIGNED DEFAULT NULL,
   `beacon_mac` varchar(17) DEFAULT NULL,
   `current_loc` bigint(20) UNSIGNED DEFAULT NULL,
@@ -128,10 +128,10 @@ CREATE TABLE `gateways_table` (
   `mac_addr` varchar(17) DEFAULT NULL,
   `reader_ip` varchar(45) DEFAULT NULL,
   `location_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `reader_status` tinyint(2) DEFAULT NULL,
+  `reader_status` tinyint(1) DEFAULT NULL,
   `up_status` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `down_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `assigned` tinyint(2) DEFAULT NULL,
+  `assigned` tinyint(1) DEFAULT NULL,
   `serial` varchar(45) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -174,8 +174,8 @@ CREATE TABLE `residents_table` (
   `resident_fName` varchar(45) DEFAULT NULL,
   `resident_lName` varchar(45) DEFAULT NULL,
   `resident_age` int(11) DEFAULT NULL,
-  `wheelchair` tinyint(2) DEFAULT NULL,
-  `walking_cane` tinyint(2) DEFAULT NULL,
+  `wheelchair` tinyint(1) DEFAULT NULL,
+  `walking_cane` tinyint(1) DEFAULT NULL,
   `x_value` float DEFAULT NULL,
   `y_value` float DEFAULT NULL,
   `z_value` float DEFAULT NULL
@@ -196,9 +196,9 @@ CREATE TABLE `rules_table` (
   `x_frequency` int(11) DEFAULT NULL,
   `y_frequency` int(11) DEFAULT NULL,
   `z_frequency` int(11) DEFAULT NULL,
-  `alert_action` tinyint(2) DEFAULT NULL,
-  `attendance` tinyint(2) DEFAULT NULL,
-  `geoence` tinyint(2) DEFAULT NULL,
+  `alert_action` tinyint(1) DEFAULT NULL,
+  `attendance` tinyint(1) DEFAULT NULL,
+  `geoence` tinyint(1) DEFAULT NULL,
   `rules_type_id` bigint(20) UNSIGNED DEFAULT NULL,
   `scope_id` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -296,8 +296,8 @@ ALTER TABLE `alerts_table`
 -- Indexes for table `beacons_table`
 --
 ALTER TABLE `beacons_table`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`),
+  ADD PRIMARY KEY (`beacon_id`),
+  ADD UNIQUE KEY `beacon_id` (`beacon_id`),
   ADD KEY `beacon_type` (`beacon_type`),
   ADD KEY `current_loc` (`current_loc`);
 
@@ -410,7 +410,7 @@ ALTER TABLE `alerts_table`
 -- AUTO_INCREMENT for table `beacons_table`
 --
 ALTER TABLE `beacons_table`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `beacon_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `beacons_type_table`
@@ -499,7 +499,7 @@ ALTER TABLE `users_type_table`
 --
 ALTER TABLE `activity_log_table`
   ADD CONSTRAINT `activity_log_table_ibfk_1` FOREIGN KEY (`gateway_id`) REFERENCES `gateways_table` (`gateway_id`),
-  ADD CONSTRAINT `activity_log_table_ibfk_2` FOREIGN KEY (`beacon_id`) REFERENCES `beacons_table` (`id`);
+  ADD CONSTRAINT `activity_log_table_ibfk_2` FOREIGN KEY (`beacon_id`) REFERENCES `beacons_table` (`beacon_id`);
 
 --
 -- Constraints for table `alerts_table`
@@ -508,7 +508,7 @@ ALTER TABLE `alerts_table`
   ADD CONSTRAINT `alerts_table_ibfk_1` FOREIGN KEY (`rules_id`) REFERENCES `rules_table` (`rules_id`),
   ADD CONSTRAINT `alerts_table_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users_table` (`user_id`),
   ADD CONSTRAINT `alerts_table_ibfk_3` FOREIGN KEY (`reader_id`) REFERENCES `gateways_table` (`gateway_id`),
-  ADD CONSTRAINT `alerts_table_ibfk_4` FOREIGN KEY (`beacon_id`) REFERENCES `beacons_table` (`id`);
+  ADD CONSTRAINT `alerts_table_ibfk_4` FOREIGN KEY (`beacon_id`) REFERENCES `beacons_table` (`beacon_id`);
 
 --
 -- Constraints for table `beacons_table`
@@ -540,7 +540,7 @@ ALTER TABLE `locations_master_table`
 -- Constraints for table `residents_table`
 --
 ALTER TABLE `residents_table`
-  ADD CONSTRAINT `residents_table_ibfk_1` FOREIGN KEY (`beacon_id`) REFERENCES `beacons_table` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `residents_table_ibfk_1` FOREIGN KEY (`beacon_id`) REFERENCES `beacons_table` (`beacon_id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `rules_table`
@@ -561,7 +561,7 @@ ALTER TABLE `scopes_table`
 ALTER TABLE `users_table`
   ADD CONSTRAINT `users_table_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `users_type_table` (`user_type_id`),
   ADD CONSTRAINT `users_table_ibfk_2` FOREIGN KEY (`right_id`) REFERENCES `users_right_table` (`user_right_id`),
-  ADD CONSTRAINT `users_table_ibfk_3` FOREIGN KEY (`beacon_id`) REFERENCES `beacons_table` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `users_table_ibfk_3` FOREIGN KEY (`beacon_id`) REFERENCES `beacons_table` (`beacon_id`) ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

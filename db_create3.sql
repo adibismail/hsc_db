@@ -22,12 +22,7 @@ create table rules_type_table(
 	rules_type_desc varchar(45),
 	primary key(rules_type_id)
 	);
-	
 
-
-	
-
-		
 	/* alter table alerts_table add foreign key(user_id) references users_table(user_id); */
 	
 	
@@ -93,9 +88,9 @@ create table rules_table(
 	x_frequency int,
 	y_frequency int,
 	z_frequency int,
-	alert_action tinyint(2),
-	attendance tinyint(2),
-	geoence tinyint(2),
+	alert_action boolean,
+	attendance boolean,
+	geoence boolean,
 	rules_type_id bigint unsigned,
 	scope_id bigint unsigned,
 	primary key(rules_id),
@@ -108,10 +103,10 @@ create table gateways_table(
 	mac_addr varchar(17),
 	reader_ip varchar(45),
 	location_id bigint unsigned,
-	reader_status tinyint(2), 
+	reader_status boolean, 
 	up_status timestamp not null default now() on update now(),
 	down_status timestamp not null,
-    assigned tinyint(2),
+    assigned boolean,
     serial varchar(45),
 	created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
@@ -127,13 +122,13 @@ create table beacons_type_table(
 	);
 
 create table beacons_table(
-	id bigint unsigned not null unique auto_increment,
+	beacon_id bigint unsigned not null unique auto_increment,
 	beacon_type int unsigned,
 	beacon_mac varchar(17),
 	current_loc bigint unsigned,
 	created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
-    primary key(id),
+    primary key(beacon_id),
 	foreign key(beacon_type) references beacons_type_table(beacon_type_id),
 	foreign key(current_loc) references gateways_table(gateway_id)
 	);
@@ -144,13 +139,13 @@ create table residents_table(
 	resident_fName varchar(45),
 	resident_lName varchar(45),
 	resident_age int,
-	wheelchair tinyint(2),
-	walking_cane tinyint(2),
+	wheelchair boolean,
+	walking_cane boolean,
 	x_value float,
 	y_value float,
 	z_value float,
     primary key(resident_id),
-    foreign key(beacon_id) references beacons_table(id) on update cascade
+    foreign key(beacon_id) references beacons_table(beacon_id) on update cascade
 	);
 
     create table users_table(
@@ -166,7 +161,7 @@ create table residents_table(
 	primary key(user_id),
 	foreign key(type_id) references users_type_table(user_type_id),
 	foreign key(right_id) references users_right_table(user_right_id),
-    foreign key(beacon_id) references beacons_table(id) on update cascade
+    foreign key(beacon_id) references beacons_table(beacon_id) on update cascade
 	);
 
 
@@ -185,7 +180,7 @@ create table activity_log_table(
 	rawData varchar(50),
 	primary key(log_id),
 	foreign key(gateway_id) references gateways_table(gateway_id),
-	foreign key(beacon_id) references beacons_table(id)
+	foreign key(beacon_id) references beacons_table(beacon_id)
 	);
 	
 	
@@ -196,13 +191,13 @@ create table alerts_table(
 	resolved_at timestamp not null default now() on update now(),
 	reader_id bigint unsigned,
 	rules_id bigint unsigned,
-	action tinyint(2),
+	action boolean,
 	user_id bigint unsigned,
 	primary key(alert_id),
 	foreign key(rules_id) references rules_table(rules_id),
 	foreign key(user_id) references users_table(user_id),
 	foreign key(reader_id) REFERENCES gateways_table(gateway_id),
-	foreign key(beacon_id) references beacons_table(id)
+	foreign key(beacon_id) references beacons_table(beacon_id)
 	);
 
 
