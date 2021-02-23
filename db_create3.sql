@@ -3,14 +3,14 @@
 create table users_type_table(
 	user_type_id int auto_increment,
 	type varchar(20),
-	description text(255),
+	description varchar(255),
 	primary key(user_type_id)
 	);
 	
 	
 create table users_right_table(
 	user_right_id int auto_increment,
-	description text(255),
+	description varchar(255),
 	restriction varchar(255),
 	primary key(user_right_id)
 	);
@@ -23,34 +23,10 @@ create table rules_type_table(
 	primary key(rules_type_id)
 	);
 	
-create table scopes_table(
-	scope_id int unsigned auto_increment,
-	gateway_id int unsigned, 
-	gateway_dwell_time varchar(45),
-	start_time timestamp not null,
-	end_time TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
-	primary key(scope_id)
-	);
+
 
 	
-create table rules_table(
-	rules_id bigint unsigned auto_increment,
-	description text(255),
-	x_threshold float,
-	y_threshold float,
-	z_threshold float,
-	x_frequency int,
-	y_frequency int,
-	z_frequency int,
-	alert_option tinyint,
-	attendance tinyint,
-	geoence tinyint,
-	rules_type_id bigint unsigned,
-	scope_id int unsigned,
-	primary key(rules_id, rules_type_id, scope_id),
-	foreign key(rules_type_id) references rules_type_table(rules_type_id),
-	foreign key(scope_id) references scopes_table(scope_id)
-	);
+
 		
 	/* alter table alerts_table add foreign key(user_id) references users_table(user_id); */
 	
@@ -91,11 +67,40 @@ create table locations_master_table(
 	location_master_id bigint unsigned auto_increment,
 	location_type_id bigint unsigned, 
 	parent_location_id bigint unsigned,
-	location_description text(255),
+	location_description varchar(255),
 	floor int unsigned,
 	primary key(location_master_id),
 	foreign key(location_type_id) references locations_type_table(type_id),
     foreign key(floor) references floors_table(floor_id) on delete cascade
+	);
+
+create table scopes_table(
+	scope_id bigint unsigned auto_increment,
+	gateway_id int unsigned, 
+	gateway_dwell_time varchar(45),
+	start_time timestamp not null,
+	end_time TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+	primary key(scope_id),
+	foreign key(scope_id) references locations_master_table(location_master_id)
+	);
+
+create table rules_table(
+	rules_id bigint unsigned auto_increment,
+	description varchar(255),
+	x_threshold float,
+	y_threshold float,
+	z_threshold float,
+	x_frequency int,
+	y_frequency int,
+	z_frequency int,
+	alert_action tinyint(2),
+	attendance tinyint(2),
+	geoence tinyint(2),
+	rules_type_id bigint unsigned,
+	scope_id bigint unsigned,
+	primary key(rules_id),
+	foreign key(rules_type_id) references rules_type_table(rules_type_id),
+	foreign key(scope_id) references scopes_table(scope_id)
 	);
 	
 create table gateways_table(
@@ -103,9 +108,10 @@ create table gateways_table(
 	mac_addr varchar(17),
 	reader_ip varchar(45),
 	location_id bigint unsigned,
-	reader_status tinyint, 
-	up_status text(255),
-    assigned tinyint,
+	reader_status tinyint(2), 
+	up_status timestamp not null default now() on update now(),
+	down_status timestamp not null,
+    assigned tinyint(2),
     serial varchar(45),
 	created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
@@ -124,20 +130,22 @@ create table beacons_table(
 	id bigint unsigned not null unique auto_increment,
 	beacon_type int unsigned,
 	beacon_mac varchar(17),
+	current_loc bigint unsigned,
 	created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
     primary key(id),
-	foreign key(beacon_type) references beacons_type_table(beacon_type_id)
+	foreign key(beacon_type) references beacons_type_table(beacon_type_id),
+	foreign key(current_loc) references gateways_table(gateway_id)
 	);
 
 create table residents_table(
 	resident_id bigint unsigned not null unique auto_increment,
 	beacon_id bigint unsigned,
-	resident_fName text(20),
-	resident_lName text(20),
+	resident_fName varchar(45),
+	resident_lName varchar(45),
 	resident_age int,
-	wheelchair tinyint,
-	walking_cane tinyint,
+	wheelchair tinyint(2),
+	walking_cane tinyint(2),
 	x_value float,
 	y_value float,
 	z_value float,
@@ -149,7 +157,6 @@ create table residents_table(
 	user_id bigint unsigned auto_increment,
     beacon_id bigint unsigned,
 	type_id int,
-	alert_id bigint,
 	right_id int,
 	fName varchar(20),
 	lName varchar(20),
@@ -184,17 +191,21 @@ create table activity_log_table(
 	
 create table alerts_table(
 	alert_id bigint auto_increment,
+	beacon_id bigint unsigned,
 	occured_at timestamp not null,
 	resolved_at timestamp not null default now() on update now(),
 	reader_id bigint unsigned,
 	rules_id bigint unsigned,
-	action tinyint,
+	action tinyint(2),
 	user_id bigint unsigned,
 	primary key(alert_id),
 	foreign key(rules_id) references rules_table(rules_id),
 	foreign key(user_id) references users_table(user_id),
-	foreign key(reader_id) REFERENCES gateways_table(gateway_id)
+	foreign key(reader_id) REFERENCES gateways_table(gateway_id),
+	foreign key(beacon_id) references beacons_table(id)
 	);
+
+
 	
 	
 
