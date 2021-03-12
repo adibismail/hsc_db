@@ -42,8 +42,8 @@ create table buildings_table(
     address varchar(255) not null,
     lat double(8,2) not null,
     lng double(8,2) not null,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+    created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL DEFAULT NULL on update now(),
     primary key(building_id)
     );
 
@@ -52,8 +52,8 @@ create table floors_table(
     id bigint(20) unsigned NOT NULL,
     number int(11) NOT NULL,
     building_id bigint unsigned DEFAULT NULL,
-    created_at timestamp NULL DEFAULT NULL,
-    updated_at timestamp NULL DEFAULT NULL,
+    created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL DEFAULT NULL on update now(),
     PRIMARY KEY (floor_id),
     foreign key(building_id) references buildings_table(building_id) on update cascade
     );
@@ -71,12 +71,12 @@ create table locations_master_table(
 
 create table scopes_table(
 	scope_id bigint unsigned auto_increment,
-	gateway_id int unsigned, 
+	location_id bigint unsigned, 
 	gateway_dwell_time varchar(45),
 	start_time timestamp not null,
 	end_time TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
 	primary key(scope_id),
-	foreign key(scope_id) references locations_master_table(location_master_id)
+	foreign key(location_id) references locations_master_table(location_master_id)
 	);
 
 create table rules_table(
@@ -108,8 +108,8 @@ create table gateways_table(
 	down_status timestamp not null,
     assigned boolean,
     serial varchar(45),
-	created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+	created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL DEFAULT NULL on update now(),
 	primary key(gateway_id),
 	foreign key(location_id) references locations_master_table(location_master_id) on update cascade
 	);
@@ -126,8 +126,8 @@ create table beacons_table(
 	beacon_type int unsigned,
 	beacon_mac varchar(17),
 	current_loc bigint unsigned,
-	created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+	created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL DEFAULT NULL on update now(),
     primary key(beacon_id),
 	foreign key(beacon_type) references beacons_type_table(beacon_type_id),
 	foreign key(current_loc) references gateways_table(gateway_id)
@@ -156,8 +156,8 @@ create table residents_table(
 	fName varchar(20),
 	lName varchar(20),
 	phone_number varchar(20),
-	created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+	created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL DEFAULT NULL on update now(),
 	primary key(user_id),
 	foreign key(type_id) references users_type_table(user_type_id),
 	foreign key(right_id) references users_right_table(user_right_id),
@@ -178,9 +178,7 @@ create table activity_log_table(
 	y_value float,
 	z_value float,
 	rawData varchar(50),
-	primary key(log_id),
-	foreign key(gateway_id) references gateways_table(gateway_id),
-	foreign key(beacon_id) references beacons_table(beacon_id)
+	primary key(log_id)
 	);
 	
 	

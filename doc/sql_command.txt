@@ -1,0 +1,27 @@
+#beacons_type_table
+insert into beacons_type_table (beacon_type_id, beacon_type_desc) values (1, "iBeacon");
+
+#beacons_table
+insert into beacons_table (beacon_id, beacon_type, beacon_mac) values (1, 1, "ac233fa51385");
+
+#locations_type_table
+insert into locations_type_table (location_type) values ("Corridor");
+insert into locations_type_table (location_type) values ("Room");
+insert into locations_type_table (location_type) values ("Toilet");
+insert into locations_type_table (location_type) values ("Canteen");
+insert into locations_type_table (location_type) values ("Public Toilet");
+insert into locations_type_table (location_type) values ("Common Area");
+
+#buildings_table
+insert into buildings_table (building_id, name, detail, floor_num, address) values (1, "Floor 1", "St.John", 1, "Singapore");
+
+#floors_table
+insert into floors_table (floor_id, id, number, building_id) values (1, 1, 1, 1);
+
+#locations_master_table
+insert into locations_master_table (location_type_id, location_description, floor) values (1, "Corridor", 1);
+insert into locations_master_table (location_type_id, location_description, floor) values (4, "Canteen", 1);
+
+#gateways_table
+insert into gateways_table (gateway_id, mac_addr, location_id) values (1, "AC233FC09416", 1);
+
