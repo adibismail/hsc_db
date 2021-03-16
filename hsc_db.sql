@@ -144,6 +144,8 @@ create table residents_table(
 	x_value float,
 	y_value float,
 	z_value float,
+	created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL DEFAULT NULL on update now(),
     primary key(resident_id),
     foreign key(beacon_id) references beacons_table(beacon_id) on update cascade
 	);
