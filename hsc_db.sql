@@ -200,6 +200,12 @@ create table alerts_table(
 	foreign key(beacon_id) references beacons_table(beacon_id)
 	);
 
+create table rules_beacon_table(
+	id int auto_increment primary key,
+	beacon_id bigint unsigned,
+	foreign key(beacon_id) references beacons_table(beacon_id)
+	);
+
 
 	
 	

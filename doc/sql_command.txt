@@ -1,5 +1,6 @@
 #beacons_type_table
 insert into beacons_type_table (beacon_type_id, beacon_type_desc) values (1, "iBeacon");
+insert into beacons_type_table (beacon_type_id, beacon_type_desc) values (2, "tag");
 
 #beacons_table
 #insert into beacons_table (beacon_type, beacon_mac) values (1, "ac233fa51385");
