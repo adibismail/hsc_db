@@ -40,8 +40,8 @@ create table buildings_table(
     detail text,
     floor_num int(11) NOT NULL,
     address varchar(255) not null,
-    lat double(8,2) not null,
-    lng double(8,2) not null,
+    lat double(8,2) default null,
+    lng double(8,2) default null,
     created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
     primary key(building_id)
@@ -70,13 +70,11 @@ create table locations_master_table(
 	);
 
 create table scopes_table(
-	scope_id bigint unsigned auto_increment,
-	location_id bigint unsigned, 
+	scope_id bigint unsigned auto_increment primary key,
 	gateway_dwell_time varchar(45),
-	start_time timestamp not null,
-	end_time TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
-	primary key(scope_id),
-	foreign key(location_id) references locations_master_table(location_master_id)
+	days bit(7) DEFAULT NULL,
+	start_time time not null,
+	duration tinyint(1) DEFAULT NULL
 	);
 
 create table rules_table(
@@ -206,36 +204,19 @@ create table rules_beacon_table(
 	foreign key(beacon_id) references beacons_table(beacon_id)
 	);
 
+create table scope_beacons_table(
+	scope_beacon_id bigint unsigned not null auto_increment primary key,
+	scope_id bigint unsigned default NULL, 
+	beacon_id bigint unsigned default NULL,
+	foreign key(scope_id) references scopes_table(scope_id),
+	foreign key(beacon_id) references beacons_table(beacon_id)
+	);
 
-	
-	
+create table scope_locations_master_table(
+	scope_location_master_id bigint unsigned NOT NULL auto_increment primary key,
+	scope_id bigint unsigned DEFAULT NULL,
+	location_id bigint unsigned DEFAULT NULL,
+	foreign key(scope_id) references scopes_table(scope_id),
+	foreign key(location_id) references locations_master_table(location_master_id)
+	);
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
