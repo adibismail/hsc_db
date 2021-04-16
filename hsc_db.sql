@@ -28,10 +28,19 @@ create table rules_type_table(
 	
 /* Gateway -> location_master -> Location_type */
 
+	-- add processing methods table 
+
+create table processing_methods_table(
+	processing_method_id bigint unsigned not null auto_increment primary key,
+	processing_method varchar(45) DEFAULT NULL
+	);
+
+
 create table locations_type_table(
-	type_id bigint unsigned auto_increment,
+	type_id bigint unsigned auto_increment primary key,
 	location_type varchar(45),
-	primary key(type_id)
+	processing_method_id bigint unsigned DEFAULT NULL,
+	foreign key (processing_method_id) references processing_methods_table(processing_method_id) on update cascade
 	);
 
 create table buildings_table(
@@ -103,7 +112,7 @@ create table gateways_table(
 	location_id bigint unsigned,
 	reader_status boolean, 
 	up_status timestamp not null default now() on update now(),
-	down_status timestamp not null,
+	down_status timestamp NULL default NULL,
     assigned boolean,
     serial varchar(45),
 	created_at timestamp default CURRENT_TIMESTAMP,
@@ -220,3 +229,16 @@ create table scope_locations_master_table(
 	foreign key(location_id) references locations_master_table(location_master_id)
 	);
 
+
+
+
+create table processing_methods_table(
+	processing_method_id bigint unsigned not null auto_increment primary key,
+	processing_method varchar(45) DEFAULT NULL
+	);
+
+
+alter table locations_type_table(
+	add processing_method_id bigint unsigned DEFAULT NULL,
+	foreign key (processing_method_id) references processing_methods_table(processing_method_id) on update cascade
+	);
