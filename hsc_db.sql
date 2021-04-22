@@ -4,6 +4,7 @@ create table users_type_table(
 	user_type_id int auto_increment,
 	type varchar(20),
 	description varchar(255),
+	deleted_at timestamp null default null,
 	primary key(user_type_id)
 	);
 	
@@ -12,6 +13,7 @@ create table users_right_table(
 	user_right_id int auto_increment,
 	description varchar(255),
 	restriction varchar(255),
+	deleted_at timestamp null default null,
 	primary key(user_right_id)
 	);
 	
@@ -35,6 +37,8 @@ create table processing_methods_table(
 	processing_method varchar(45) DEFAULT NULL
 	);
 
+insert into processing_methods_table (processing_method) values ("Direct"), ("Sampling");
+
 
 create table locations_type_table(
 	type_id bigint unsigned auto_increment primary key,
@@ -53,6 +57,7 @@ create table buildings_table(
     lng double(8,2) default null,
     created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
+	deleted_at timestamp null default null,
     primary key(building_id)
     );
 
@@ -63,6 +68,7 @@ create table floors_table(
     building_id bigint unsigned DEFAULT NULL,
     created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
+	deleted_at timestamp null default null,
     PRIMARY KEY (floor_id),
     foreign key(building_id) references buildings_table(building_id) on update cascade
     );
@@ -73,6 +79,7 @@ create table locations_master_table(
 	parent_location_id bigint unsigned,
 	location_description varchar(255),
 	floor int unsigned,
+	deleted_at timestamp null default null,
 	primary key(location_master_id),
 	foreign key(location_type_id) references locations_type_table(type_id),
     foreign key(floor) references floors_table(floor_id) on delete cascade
@@ -97,9 +104,13 @@ create table rules_table(
 	z_frequency int,
 	alert_action boolean,
 	attendance boolean,
-	geoence boolean,
+	geofence boolean,
 	rules_type_id bigint unsigned,
 	scope_id bigint unsigned,
+	created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL DEFAULT NULL on update now(),
+	deleted_at timestamp null default null,
+	batttery_threshold int(11)	default null,
 	primary key(rules_id),
 	foreign key(rules_type_id) references rules_type_table(rules_type_id),
 	foreign key(scope_id) references scopes_table(scope_id)
@@ -117,6 +128,7 @@ create table gateways_table(
     serial varchar(45),
 	created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
+	deleted_at timestamp null default null,
 	primary key(gateway_id),
 	foreign key(location_id) references locations_master_table(location_master_id) on update cascade
 	);
@@ -135,6 +147,7 @@ create table beacons_table(
 	current_loc bigint unsigned,
 	created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
+	deleted_at timestamp null default null,
     primary key(beacon_id),
 	foreign key(beacon_type) references beacons_type_table(beacon_type_id),
 	foreign key(current_loc) references gateways_table(gateway_id)
@@ -153,6 +166,8 @@ create table residents_table(
 	z_value float,
 	created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
+	gender varchar(1) default null,
+	deleted_at timestamp null default null,
     primary key(resident_id),
     foreign key(beacon_id) references beacons_table(beacon_id) on update cascade
 	);
@@ -167,6 +182,7 @@ create table residents_table(
 	phone_number varchar(20),
 	created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
+	deleted_at timestamp null default null,
 	primary key(user_id),
 	foreign key(type_id) references users_type_table(user_type_id),
 	foreign key(right_id) references users_right_table(user_right_id),
@@ -200,6 +216,7 @@ create table alerts_table(
 	rules_id bigint unsigned,
 	action boolean,
 	user_id bigint unsigned,
+	deleted_at timestamp null default null,
 	primary key(alert_id),
 	foreign key(rules_id) references rules_table(rules_id),
 	foreign key(user_id) references users_table(user_id),
@@ -229,16 +246,3 @@ create table scope_locations_master_table(
 	foreign key(location_id) references locations_master_table(location_master_id)
 	);
 
-
-
-
-create table processing_methods_table(
-	processing_method_id bigint unsigned not null auto_increment primary key,
-	processing_method varchar(45) DEFAULT NULL
-	);
-
-
-alter table locations_type_table(
-	add processing_method_id bigint unsigned DEFAULT NULL,
-	foreign key (processing_method_id) references processing_methods_table(processing_method_id) on update cascade
-	);
