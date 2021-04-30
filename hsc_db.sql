@@ -57,6 +57,7 @@ create table buildings_table(
     lng double(8,2) default null,
     created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
+	id int unique default null,
 	deleted_at timestamp null default null,
     primary key(building_id)
     );
@@ -68,6 +69,7 @@ create table floors_table(
     building_id bigint unsigned DEFAULT NULL,
     created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
+	alias varchar(255) default null,
 	deleted_at timestamp null default null,
     PRIMARY KEY (floor_id),
     foreign key(building_id) references buildings_table(building_id) on update cascade
