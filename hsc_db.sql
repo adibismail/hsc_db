@@ -30,8 +30,6 @@ create table rules_type_table(
 	
 /* Gateway -> location_master -> Location_type */
 
-	-- add processing methods table 
-
 create table processing_methods_table(
 	processing_method_id bigint unsigned not null auto_increment primary key,
 	processing_method varchar(45) DEFAULT NULL
@@ -120,7 +118,7 @@ create table rules_table(
 	
 create table gateways_table(
 	gateway_id bigint unsigned auto_increment,
-	mac_addr varchar(17) unique default null, --added unique attribute
+	mac_addr varchar(17) unique default null,
 	reader_ip varchar(45),
 	location_id bigint unsigned,
 	reader_status boolean, 
@@ -217,7 +215,7 @@ create table activity_log_table(
 	x_value float,
 	y_value float,
 	z_value float,
-	rawData varchar(100), --change from 50 to 100
+	rawData varchar(100),
 	primary key(log_id)
 	);
 	
@@ -261,3 +259,8 @@ create table scope_locations_master_table(
 	foreign key(location_id) references locations_master_table(location_master_id)
 	);
 
+create table activity_log_alerts_pos_aws_temp_table(
+	post_id bigint(20) unsigned not null AUTO_INCREMENT primary key,
+	events mediumtext not null,
+	created_at timestamp not null default current_timestamp
+	);
