@@ -25,6 +25,8 @@ create table rules_type_table(
 	primary key(rules_type_id)
 	);
 
+insert into rules_type_table (rules_type_desc) values ("Attendance"), ("Battery"), ("Duress Button"), ("Fall"), ("Geofence"), ("Violence");
+
 	/* alter table alerts_table add foreign key(user_id) references users_table(user_id); */
 	
 	
@@ -45,6 +47,8 @@ create table locations_type_table(
 	foreign key (processing_method_id) references processing_methods_table(processing_method_id) on update cascade
 	);
 
+insert into locations_type_table (location_type, processing_method_id) values ("Corridor", 1), ("Room", 2), ("Toilet", 2), ("Canteen", 1), ("Public Toilet", 2), ("Common Area", 1);
+
 create table buildings_table(
     building_id bigint unsigned NOT NULL auto_increment,
     name varchar(255) NOT NULL, 
@@ -60,6 +64,8 @@ create table buildings_table(
     primary key(building_id)
     );
 
+insert into buildings_table (name, detail, floor_num, address, id) values ("HSC Resident Home", "HSC Resident Home", 6, "Singapore", 1);
+
 create table floors_table(
     floor_id int unsigned auto_increment,
     id bigint(20) unsigned NOT NULL,
@@ -72,6 +78,8 @@ create table floors_table(
     PRIMARY KEY (floor_id),
     foreign key(building_id) references buildings_table(building_id) on update cascade
     );
+
+insert into floors_table (id, number, building_id, alias) values (1, 1, 1, "1st Storey"), (2, 2, 1, "2nd Storey"), (3, 3, 1, "3rd Storey"), (4, 4, 1, "4th Storey"), (5, 5, 1, "5th Storey"), (6, 6, 1, "Roof");
 	
 create table locations_master_table(
 	location_master_id bigint unsigned auto_increment,
@@ -139,6 +147,8 @@ create table beacons_type_table(
 	beacon_type_desc text(20),
 	primary key(beacon_type_id)
 	);
+
+insert into beacons_type_table (beacon_type_desc) values ("iBeacon"), ("tag");
 
 create table beacons_table(
 	beacon_id bigint unsigned not null unique auto_increment,
@@ -259,7 +269,7 @@ create table scope_locations_master_table(
 	foreign key(location_id) references locations_master_table(location_master_id)
 	);
 
-create table activity_log_alerts_pos_aws_temp_table(
+create table activity_log_alerts_post_aws_temp_table(
 	post_id bigint(20) unsigned not null AUTO_INCREMENT primary key,
 	events mediumtext not null,
 	created_at timestamp not null default current_timestamp
