@@ -120,7 +120,7 @@ create table rules_table(
 	
 create table gateways_table(
 	gateway_id bigint unsigned auto_increment,
-	mac_addr varchar(17),
+	mac_addr varchar(17) unique default null, --added unique attribute
 	reader_ip varchar(45),
 	location_id bigint unsigned,
 	reader_status boolean, 
@@ -168,8 +168,15 @@ create table residents_table(
 	z_value float,
 	created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
-	gender varchar(1) default null,
+	resident_gender varchar(1) default null,
 	deleted_at timestamp null default null,
+	image_url varchar(255) null default null,
+	contact_name varchar(255) null default null,
+	contact_phone_num_1 varchar(255) null default null,
+	contact_phone_num_2 varchar(255) null default null,
+	contact_address text null default null,
+	contact_relationship tinytext null default null,
+	resident_dob date null default null,
     primary key(resident_id),
     foreign key(beacon_id) references beacons_table(beacon_id) on update cascade
 	);
@@ -184,7 +191,13 @@ create table residents_table(
 	phone_number varchar(20),
 	created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp NULL DEFAULT NULL on update now(),
+	username varchar(255) null default null,
+	password varchar(255) null default null,
+	remember_token varchar(100) null default null,
+	email varchar(255) null default null,
 	deleted_at timestamp null default null,
+	gender varchar(1) null default null,
+	image_url varchar(255) null default null,
 	primary key(user_id),
 	foreign key(type_id) references users_type_table(user_type_id),
 	foreign key(right_id) references users_right_table(user_right_id),
@@ -204,7 +217,7 @@ create table activity_log_table(
 	x_value float,
 	y_value float,
 	z_value float,
-	rawData varchar(50),
+	rawData varchar(100), --change from 50 to 100
 	primary key(log_id)
 	);
 	
