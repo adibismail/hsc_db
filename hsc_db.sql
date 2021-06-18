@@ -274,3 +274,15 @@ create table activity_log_alerts_post_aws_temp_table(
 	events mediumtext not null,
 	created_at timestamp not null default current_timestamp
 	);
+
+create table activity_log_post_hsc_temp_table(
+	post_id bigint(20) unsigned not null auto_increment primary key,
+	events mediumtext not null,
+	created_at timestamp not null default current_timestamp
+	);
+
+create table alerts_post_hsc_temp_table(
+	post_id bigint(20) unsigned not null auto_increment primary key,
+	events mediumtext not null,
+	created_at timestamp not null default current_timestamp
+	);
