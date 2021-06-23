@@ -185,6 +185,8 @@ create table residents_table(
 	contact_address text null default null,
 	contact_relationship tinytext null default null,
 	resident_dob date null default null,
+	gender varchar(1) null default 'M',
+	location_room_id bigint unsigned default null,
     primary key(resident_id),
     foreign key(beacon_id) references beacons_table(beacon_id) on update cascade
 	);
